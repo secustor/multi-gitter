@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"github.com/lindell/multi-gitter/internal/fs"
 	"os"
 
 	"github.com/lindell/multi-gitter/internal/multigitter"
@@ -40,7 +41,7 @@ func status(cmd *cobra.Command, _ []string) error {
 		return err
 	}
 
-	output, err := fileOutput(strOutput, os.Stdout)
+	output, err := fs.FileOutput(strOutput, os.Stdout)
 	if err != nil {
 		return err
 	}

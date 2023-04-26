@@ -9,8 +9,8 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/lindell/multi-gitter/internal/fs"
 	"github.com/lindell/multi-gitter/internal/git"
-
 	"github.com/lindell/multi-gitter/internal/multigitter"
 	"github.com/spf13/cobra"
 )
@@ -99,7 +99,7 @@ func run(cmd *cobra.Command, _ []string) error {
 		return errors.New("concurrent runs can't be less than one")
 	}
 
-	output, err := fileOutput(strOutput, os.Stdout)
+	output, err := fs.FileOutput(strOutput, os.Stdout)
 	if err != nil {
 		return err
 	}

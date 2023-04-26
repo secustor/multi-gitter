@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/lindell/multi-gitter/internal/fs"
 	"os"
 
 	"github.com/pkg/errors"
@@ -67,7 +68,7 @@ func logFlagInit(cmd *cobra.Command, _ []string) error {
 	// Set the output (file)
 	strFile, _ := cmd.Flags().GetString("log-file")
 	if strFile == "" {
-		log.SetOutput(nopWriter{})
+		log.SetOutput(fs.NopWriter{})
 	} else if strFile != "-" {
 		file, err := os.Create(strFile)
 		if err != nil {

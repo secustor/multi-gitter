@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"io"
 	"os"
 
 	"github.com/lindell/multi-gitter/internal/scm"
@@ -12,7 +11,7 @@ import (
 func outputFlag() *flag.FlagSet {
 	flags := flag.NewFlagSet("output", flag.ExitOnError)
 
-	flags.StringP("output", "o", "-", `The file that the output of the script should be outputted to. "-" means stdout.`)
+	flags.StringP("output", "o", "-", `The file that the output of the script should be outputted to. "-" means stdout. If using 'print' you can also use templates e.g. '--output "./results/{{ .FullName }}.json"'`)
 
 	return flags
 }
@@ -57,28 +56,4 @@ func getMergeTypes(flag *flag.FlagSet) ([]scm.MergeType, error) {
 	}
 
 	return mergeTypes, nil
-}
-
-// nopWriter is a writer that does nothing
-type nopWriter struct{}
-
-func (nw nopWriter) Write(bb []byte) (int, error) {
-	return len(bb), nil
-}
-
-type nopCloser struct {
-	io.Writer
-}
-
-func (nopCloser) Close() error { return nil }
-
-func fileOutput(value string, std io.Writer) (io.WriteCloser, error) {
-	if value != "-" {
-		file, err := os.Create(value)
-		if err != nil {
-			return nil, errors.Wrapf(err, "could not open file %s", value)
-		}
-		return file, nil
-	}
-	return nopCloser{std}, nil
 }

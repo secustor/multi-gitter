@@ -3,11 +3,12 @@ package multigitter
 import (
 	"context"
 	"fmt"
+	"os"
+
+	"github.com/lindell/multi-gitter/internal/fs"
 	"github.com/lindell/multi-gitter/internal/multigitter/repocounter"
 	"github.com/lindell/multi-gitter/internal/scm"
 	log "github.com/sirupsen/logrus"
-	"io"
-	"os"
 )
 
 // Printer contains fields to be able to do the print command
@@ -17,8 +18,8 @@ type Printer struct {
 	ScriptPath string // Must be absolute path
 	Arguments  []string
 
-	Stdout io.Writer
-	Stderr io.Writer
+	StdoutPattern string
+	StderrPattern string
 
 	Concurrent int
 
@@ -81,8 +82,18 @@ func (r Printer) runSingleRepo(ctx context.Context, repo scm.Repository) error {
 
 	cmd := prepareScriptCommand(ctx, repo, tmpDir, r.ScriptPath, r.Arguments)
 
-	cmd.Stdout = r.Stdout
-	cmd.Stderr = r.Stderr
+	output, err := fs.FileOutputTemplated(r.StdoutPattern, repo, os.Stdout)
+	if err != nil {
+		return err
+	}
+
+	errOutput, err := fs.FileOutputTemplated(r.StderrPattern, repo, os.Stderr)
+	if err != nil {
+		return err
+	}
+
+	cmd.Stdout = output
+	cmd.Stderr = errOutput
 
 	err = cmd.Run()
 	if err != nil {

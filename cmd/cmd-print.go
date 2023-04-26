@@ -47,21 +47,11 @@ func printCMD(cmd *cobra.Command, _ []string) error {
 	flag := cmd.Flags()
 
 	concurrent, _ := flag.GetInt("concurrent")
-	strOutput, _ := flag.GetString("output")
-	strErrOutput, _ := flag.GetString("error-output")
+	strOutputPattern, _ := flag.GetString("output")
+	strErrOutputPattern, _ := flag.GetString("error-output")
 
 	if concurrent < 1 {
 		return errors.New("concurrent runs can't be less than one")
-	}
-
-	output, err := fileOutput(strOutput, os.Stdout)
-	if err != nil {
-		return err
-	}
-
-	errOutput, err := fileOutput(strErrOutput, os.Stderr)
-	if err != nil {
-		return err
 	}
 
 	vc, err := getVersionController(flag, true, true)
@@ -97,8 +87,8 @@ func printCMD(cmd *cobra.Command, _ []string) error {
 
 		VersionController: vc,
 
-		Stdout: output,
-		Stderr: errOutput,
+		StdoutPattern: strOutputPattern,
+		StderrPattern: strErrOutputPattern,
 
 		Concurrent: concurrent,
 

@@ -729,6 +729,15 @@ This command will clone down multiple repositories. For each of those repositori
 When the script is invoked, these environment variables are set:
 - REPOSITORY will be set to the name of the repository currently being executed
 
+Further you can template your `output` and `error-output` path. 
+```shell
+multi-gitter print script.sh --output "./results/{{ .FullName }}.json"
+```
+
+Available options are: 
+- `FullName`: full name of repository
+- `DefaultBranch` default branch of the repository
+
 ```
 Usage:
   multi-gitter print [script path] [flags]
